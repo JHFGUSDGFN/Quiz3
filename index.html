@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyber Security Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f9;
+      color: #333;
+      text-align: center;
+    }
+    .container {
+      padding: 20px;
+      max-width: 800px;
+      margin: 20px auto;
+      background: #fff;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+    h1, h2 {
+      color: #444;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .hidden {
+      display: none;
+    }
+    .result {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1> حكمة اليوم وراء كل طالب ناجح ريصب و اتنين هيعيدهم الخميس الجاي</h1>
+    <h1>Cyber Security Quiz</h1>
+    <div id="difficulty-selection">
+      <h2>Select Difficulty Level</h2>
+      <button onclick="startQuiz('easy')">Easy</button>
+      <button onclick="startQuiz('medium')">Medium</button>
+      <button onclick="startQuiz('hard')">Hard</button>
+    </div>
+
+    <div id="quiz-container" class="hidden">
+      <h2 id="quiz-title"></h2>
+      <div id="questions"></div>
+      <button onclick="submitQuiz()">Submit</button>
+    </div>
+
+    <div id="result" class="hidden">
+      <h2>Your Score</h2>
+      <p id="score"></p>
+    </div>
+  </div>
+
+  <script>
+    // بنك الأسئلة مع 30 سؤال لكل مستوى
+    const questions = {
+      easy: Array.from({ length: 30 }, (_, i) => ({
+        question: `Easy Question ${i + 1}: What does CIA stand for in cybersecurity?`,
+        options: ["Confidentiality, Integrity, Availability", "Central Intelligence Agency", "Cybersecurity Information Act"],
+        answer: 0,
+      })),
+      medium: Array.from({ length: 30 }, (_, i) => ({
+        question: `Medium Question ${i + 1}: What is the purpose of encryption?`,
+        options: ["To secure data", "To slow down hackers", "To improve internet speed"],
+        answer: 0,
+      })),
+      hard: Array.from({ length: 30 }, (_, i) => ({
+        question: `Hard Question ${i + 1}: Which protocol ensures secure communication on the web?`,
+        options: ["HTTP", "HTTPS", "FTP"],
+        answer: 1,
+      })),
+    };
+
+    let selectedQuestions = [];
+    let userAnswers = [];
+
+    function startQuiz(difficulty) {
+      selectedQuestions = questions[difficulty];
+      document.getElementById("difficulty-selection").classList.add("hidden");
+      document.getElementById("quiz-container").classList.remove("hidden");
+      document.getElementById("quiz-title").innerText = `Quiz: ${difficulty.charAt(0).toUpperCase() + difficulty.slice(1)} Level`;
+      displayQuestions();
+    }
+
+    function displayQuestions() {
+      const questionContainer = document.getElementById("questions");
+      questionContainer.innerHTML = "";
+      selectedQuestions.forEach((q, index) => {
+        const questionDiv = document.createElement("div");
+        questionDiv.innerHTML = `
+          <p>${index + 1}. ${q.question}</p>
+          ${q.options
+            .map((option, i) => `<label><input type="radio" name="q${index}" value="${i}"> ${option}</label><br>`)
+            .join("")}
+        `;
+        questionContainer.appendChild(questionDiv);
+      });
+    }
+
+    function submitQuiz() {
+      userAnswers = selectedQuestions.map((q, index) => {
+        const options = document.getElementsByName(`q${index}`);
+        for (let option of options) {
+          if (option.checked) return parseInt(option.value);
+        }
+        return null; // If no answer is selected
+      });
+
+      calculateScore();
+    }
+
+    function calculateScore() {
+      let score = 0;
+      userAnswers.forEach((answer, index) => {
+        if (answer === selectedQuestions[index].answer) score++;
+      });
+
+      document.getElementById("quiz-container").classList.add("hidden");
+      document.getElementById("result").classList.remove("hidden");
+      document.getElementById("score").innerText = `${score} / ${selectedQuestions.length}`;
+    }
+  </script>
+</body>
+</html>
